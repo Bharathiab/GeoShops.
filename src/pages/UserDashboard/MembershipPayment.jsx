@@ -86,7 +86,7 @@ const MembershipPayment = () => {
 
             // Submit payment to backend
             // Using the endpoint we created in MembershipController
-            await axios.post(`http://localhost:5000/api/membership/cards/request/${requestId}/payment`, {
+            await axios.post(`https://geoshops-production.up.railway.app/api/membership/cards/request/${requestId}/payment`, {
                 transactionId: transactionId.trim(),
                 receiptUrl,
                 amount: price,

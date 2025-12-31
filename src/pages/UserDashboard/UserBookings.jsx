@@ -351,7 +351,7 @@ const UserBookings = () => {
                               src={(() => {
                                 const img = booking.imageUrl || booking.image_url;
                                 if (!img) return 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80';
-                                return img.startsWith('http') ? img : `http://localhost:5000${img.startsWith('/') ? '' : '/'}${img}`;
+                                return img.startsWith('http') ? img : `https://geoshops-production.up.railway.app${img.startsWith('/') ? '' : '/'}${img}`;
                               })()}
                               alt="" 
                               className="prop-img" 

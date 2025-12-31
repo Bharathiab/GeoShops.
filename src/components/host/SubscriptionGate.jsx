@@ -17,7 +17,7 @@ const SubscriptionGate = ({ children }) => {
 
     const checkAccess = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/host/${hostId}/access-status`);
+            const response = await axios.get(`https://geoshops-production.up.railway.app/api/host/${hostId}/access-status`);
             setAccessStatus(response.data);
         } catch (error) {
             console.error('Error checking access:', error);

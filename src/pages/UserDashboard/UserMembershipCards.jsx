@@ -34,7 +34,7 @@ const UserMembershipCards = () => {
                     const cardId = req.card_design_id || req.cardDesignId;
                     if (cardId) {
                         try {
-                            const response = await axios.get(`http://localhost:5000/api/membership/cards/designs/${cardId}`);
+                            const response = await axios.get(`https://geoshops-production.up.railway.app/api/membership/cards/designs/${cardId}`);
                             details[req.id] = response.data;
                         } catch (err) {
                             console.error(`Error fetching card design ${cardId}:`, err);

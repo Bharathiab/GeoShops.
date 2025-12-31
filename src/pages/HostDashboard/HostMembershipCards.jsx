@@ -79,14 +79,14 @@ const HostMembershipCards = () => {
 
   const fetchProperties = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/properties/host/${hostId}`);
+      const response = await axios.get(`https://geoshops-production.up.railway.app/api/properties/host/${hostId}`);
       setProperties(response.data);
     } catch (err) { console.error("Error fetching properties:", err); }
   };
 
   const fetchSubscription = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/host/${hostId}/subscription`);
+      const response = await axios.get(`https://geoshops-production.up.railway.app/api/host/${hostId}/subscription`);
       setSubscription(response.data);
     } catch (err) { console.error("Error fetching subscription:", err); }
   };
@@ -94,7 +94,7 @@ const HostMembershipCards = () => {
   const fetchDesigns = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/membership/host/${hostId}/cards/designs`);
+      const response = await axios.get(`https://geoshops-production.up.railway.app/api/membership/host/${hostId}/cards/designs`);
       setDesigns(response.data);
     } catch (err) { setError("Failed to load card designs."); }
     finally { setLoading(false); }
@@ -127,11 +127,11 @@ const HostMembershipCards = () => {
 
     try {
       if (editMode) {
-        await axios.put(`http://localhost:5000/api/membership/cards/designs/${editingId}`, { hostId, ...newDesign });
+        await axios.put(`https://geoshops-production.up.railway.app/api/membership/cards/designs/${editingId}`, { hostId, ...newDesign });
         setSuccess("Design updated successfully!");
         setEditMode(false); setEditingId(null);
       } else {
-        await axios.post("http://localhost:5000/api/membership/cards/designs", { hostId, ...newDesign });
+        await axios.post("https://geoshops-production.up.railway.app/api/membership/cards/designs", { hostId, ...newDesign });
         setSuccess("Design created successfully!");
       }
       resetForm();
@@ -156,7 +156,7 @@ const HostMembershipCards = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/membership/cards/designs/${deleteId}`);
+      await axios.delete(`https://geoshops-production.up.railway.app/api/membership/cards/designs/${deleteId}`);
       setSuccess("Deleted successfully!");
       fetchDesigns();
     } catch (err) { setError("Delete failed."); }
@@ -178,7 +178,7 @@ const HostMembershipCards = () => {
     e.preventDefault();
     if (!issueCard.email || !issueCard.cardId) { setError("Please fill all fields."); return; }
     try {
-      await axios.post(`http://localhost:5000/api/membership/issue`, {
+      await axios.post(`https://geoshops-production.up.railway.app/api/membership/issue`, {
         hostId,
         userEmail: issueCard.email,
         cardDesignId: issueCard.cardId

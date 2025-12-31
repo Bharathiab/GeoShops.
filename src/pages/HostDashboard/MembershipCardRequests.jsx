@@ -53,7 +53,7 @@ const MembershipCardRequests = () => {
 
     const fetchCardDesigns = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/membership/host/${hostId}/cards/designs`);
+            const response = await axios.get(`https://geoshops-production.up.railway.app/api/membership/host/${hostId}/cards/designs`);
             setCardDesigns(response.data);
         } catch (err) { console.error("Error fetching card designs:", err); }
     };
@@ -62,7 +62,7 @@ const MembershipCardRequests = () => {
         try {
             const payload = { status: action === "approve" ? "Approved" : "Rejected" };
             if (cardDesignId) payload.cardDesignId = cardDesignId;
-            await axios.put(`http://localhost:5000/api/membership/host/requests/${requestId}`, payload);
+            await axios.put(`https://geoshops-production.up.railway.app/api/membership/host/requests/${requestId}`, payload);
             setSuccess(`Request ${action}d successfully.`);
             fetchRequests();
             setShowApproveModal(false); setSelectedRequest(null); setSelectedCard("");

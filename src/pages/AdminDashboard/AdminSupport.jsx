@@ -90,7 +90,7 @@ const AdminSupport = () => {
 
     const fetchMessages = async (ticketId) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/support/queries/${ticketId}/messages`);
+            const response = await fetch(`https://geoshops-production.up.railway.app/api/support/queries/${ticketId}/messages`);
             if (response.ok) {
                 const data = await response.json();
                 setChatMessages(data);
@@ -119,7 +119,7 @@ const AdminSupport = () => {
                 message: newMessage
             };
 
-            const response = await fetch(`http://localhost:5000/api/support/queries/${selectedQuery.id}/messages`, {
+            const response = await fetch(`https://geoshops-production.up.railway.app/api/support/queries/${selectedQuery.id}/messages`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(messageData),
@@ -153,7 +153,7 @@ const AdminSupport = () => {
         setShowResolveModal(false);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/support/queries/${selectedQuery.id}/reply`, {
+            const response = await fetch(`https://geoshops-production.up.railway.app/api/support/queries/${selectedQuery.id}/reply`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

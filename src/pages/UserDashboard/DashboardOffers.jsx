@@ -210,7 +210,7 @@ const DashboardOffers = () => {
                                         >
                                             <div className="elite-offer-img-col">
                                                 <img
-                                                    src={offer.imageUrl ? `http://localhost:5000${offer.imageUrl}` : 'https://images.unsplash.com/photo-1540544660431-98411d9b7d99?auto=format&fit=crop&w=800&q=80'}
+                                                    src={offer.imageUrl ? `https://geoshops-production.up.railway.app${offer.imageUrl}` : 'https://images.unsplash.com/photo-1540544660431-98411d9b7d99?auto=format&fit=crop&w=800&q=80'}
                                                     alt={offer.title}
                                                     className="elite-offer-img"
                                                 />

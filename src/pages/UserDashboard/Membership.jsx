@@ -31,8 +31,8 @@ const Membership = () => {
         setLoading(true);
         try {
             const [cardsRes, requestsRes] = await Promise.all([
-                axios.get(`http://localhost:5000/api/membership/user/${userId}/cards`),
-                axios.get(`http://localhost:5000/api/membership/user/${userId}/requests`)
+                axios.get(`https://geoshops-production.up.railway.app/api/membership/user/${userId}/cards`),
+                axios.get(`https://geoshops-production.up.railway.app/api/membership/user/${userId}/requests`)
             ]);
             setCards(cardsRes.data);
             setRequests(requestsRes.data);
@@ -40,7 +40,7 @@ const Membership = () => {
             // Fetch host subscriptions for each unique host
             const uniqueHostIds = [...new Set(cardsRes.data.map(card => card.host_id))];
             const subscriptionPromises = uniqueHostIds.map(hostId =>
-                axios.get(`http://localhost:5000/api/host/${hostId}/subscription`)
+                axios.get(`https://geoshops-production.up.railway.app/api/host/${hostId}/subscription`)
                     .then(res => ({ hostId, subscription: res.data }))
                     .catch(err => ({ hostId, subscription: null }))
             );

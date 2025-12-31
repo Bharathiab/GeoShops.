@@ -59,7 +59,7 @@ const SubscriptionPayment = () => {
       // Create subscription and submit payment in one go
       // This ensures the subscription is only created when payment proof is actually submitted
       console.log('Creating subscription for host:', hostId, 'with plan ID:', subscriptionId);
-      const subscriptionResponse = await axios.post('http://localhost:5000/api/host/subscriptions', {
+      const subscriptionResponse = await axios.post('https://geoshops-production.up.railway.app/api/host/subscriptions', {
         hostId: hostId,
         subscriptionId: subscriptionId
       });
@@ -85,7 +85,7 @@ const SubscriptionPayment = () => {
       formData.append('transactionId', transactionId);
       formData.append('receipt', receiptFile);
 
-      await axios.post('http://localhost:5000/api/host/subscription-payment', formData, {
+      await axios.post('https://geoshops-production.up.railway.app/api/host/subscription-payment', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 

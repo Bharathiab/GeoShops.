@@ -346,7 +346,7 @@ const AdminSubscriptionRequests = () => {
                                 <div>
                                     <div className="bg-white p-3 rounded-3 shadow-sm d-inline-block border mb-4" style={{maxWidth: '100%'}}>
                                         <img
-                                            src={`http://localhost:5000/${selectedReceipt}`}
+                                            src={`https://geoshops-production.up.railway.app/${selectedReceipt}`}
                                             alt="Payment Receipt"
                                             style={{ maxWidth: "100%", maxHeight: "60vh", borderRadius: "8px" }}
                                             onError={(e) => {
@@ -357,7 +357,7 @@ const AdminSubscriptionRequests = () => {
                                     </div>
                                     <div className="d-flex justify-content-center">
                                         <a
-                                            href={`http://localhost:5000/${selectedReceipt}`}
+                                            href={`https://geoshops-production.up.railway.app/${selectedReceipt}`}
                                             download
                                             className="btn btn-primary rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center"
                                             style={{ background: "linear-gradient(135deg, #4f46e5 0%, #818cf8 100%)", border: 'none' }}

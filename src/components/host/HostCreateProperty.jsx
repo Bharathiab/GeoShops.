@@ -1364,7 +1364,7 @@ const HostCreateProperty = ({ onSubmit, editingProperty }) => {
                     try {
                       const formData = new FormData();
                       files.forEach(file => formData.append('files', file));
-                      const response = await fetch('http://localhost:5000/api/upload/images', {
+                      const response = await fetch('https://geoshops-production.up.railway.app/api/upload/images', {
                         method: 'POST',
                         body: formData
                       });

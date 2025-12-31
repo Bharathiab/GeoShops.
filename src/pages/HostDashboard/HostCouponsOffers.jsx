@@ -47,10 +47,10 @@ const HostCouponsOffers = () => {
   const loadData = async () => {
     try {
       const [couponsRes, offersRes, propertiesRes, usersRes] = await Promise.all([
-        axios.get(`http://localhost:5000/api/host/${hostId}/coupons`),
-        axios.get(`http://localhost:5000/api/host/${hostId}/offers`),
-        axios.get(`http://localhost:5000/api/properties/host/${hostId}`),
-        axios.get(`http://localhost:5000/api/host/${hostId}/users`)
+        axios.get(`https://geoshops-production.up.railway.app/api/host/${hostId}/coupons`),
+        axios.get(`https://geoshops-production.up.railway.app/api/host/${hostId}/offers`),
+        axios.get(`https://geoshops-production.up.railway.app/api/properties/host/${hostId}`),
+        axios.get(`https://geoshops-production.up.railway.app/api/host/${hostId}/users`)
       ]);
       setCoupons(couponsRes.data);
       setOffers(offersRes.data);
@@ -97,10 +97,10 @@ const HostCouponsOffers = () => {
     try {
       const data = { hostId, ...couponForm };
       if (editingCoupon) {
-        await axios.put(`http://localhost:5000/api/host/coupons/${editingCoupon.id}`, { ...data, status: editingCoupon.status });
+        await axios.put(`https://geoshops-production.up.railway.app/api/host/coupons/${editingCoupon.id}`, { ...data, status: editingCoupon.status });
         showAlert('Coupon updated!');
       } else {
-        await axios.post('http://localhost:5000/api/host/coupons', data);
+        await axios.post('https://geoshops-production.up.railway.app/api/host/coupons', data);
         showAlert('Coupon created!');
       }
       setShowCouponModal(false);
@@ -127,7 +127,7 @@ const HostCouponsOffers = () => {
       show: true, type: "confirm", message: "Delete this coupon permanently?",
       onConfirm: async () => {
         try {
-          await axios.delete(`http://localhost:5000/api/host/coupons/${id}`);
+          await axios.delete(`https://geoshops-production.up.railway.app/api/host/coupons/${id}`);
           showAlert('Coupon deleted!');
           loadData();
           setModalConfig(prev => ({ ...prev, show: false }));
@@ -141,7 +141,7 @@ const HostCouponsOffers = () => {
   const handleToggleCouponStatus = async (coupon) => {
     try {
       const newStatus = coupon.status === 'Active' ? 'Inactive' : 'Active';
-      await axios.put(`http://localhost:5000/api/host/coupons/${coupon.id}`, { ...coupon, status: newStatus });
+      await axios.put(`https://geoshops-production.up.railway.app/api/host/coupons/${coupon.id}`, { ...coupon, status: newStatus });
       showAlert(`Coupon ${newStatus.toLowerCase()}!`);
       loadData();
     } catch (error) {
@@ -172,7 +172,7 @@ const HostCouponsOffers = () => {
       banner: null, targetAllUsers: offer.targetAllUsers !== false,
       targetUserIds: offer.targetUserIds || []
     });
-    setBannerPreview(offer.imageUrl ? `http://localhost:5000${offer.imageUrl}` : null);
+    setBannerPreview(offer.imageUrl ? `https://geoshops-production.up.railway.app${offer.imageUrl}` : null);
     setShowOfferModal(true);
   };
 
@@ -188,10 +188,10 @@ const HostCouponsOffers = () => {
 
       if (editingOffer) {
         formData.append('status', editingOffer.status);
-        await axios.put(`http://localhost:5000/api/host/offers/${editingOffer.id}`, formData);
+        await axios.put(`https://geoshops-production.up.railway.app/api/host/offers/${editingOffer.id}`, formData);
         showAlert('Offer updated!');
       } else {
-        await axios.post('http://localhost:5000/api/host/offers', formData);
+        await axios.post('https://geoshops-production.up.railway.app/api/host/offers', formData);
         showAlert('Offer created!');
       }
       setShowOfferModal(false);
@@ -206,7 +206,7 @@ const HostCouponsOffers = () => {
       show: true, type: "confirm", message: "Delete this offer permanently?",
       onConfirm: async () => {
         try {
-          await axios.delete(`http://localhost:5000/api/host/offers/${id}`);
+          await axios.delete(`https://geoshops-production.up.railway.app/api/host/offers/${id}`);
           showAlert('Offer deleted!');
           loadData();
           setModalConfig(prev => ({ ...prev, show: false }));
@@ -617,7 +617,7 @@ const HostCouponsOffers = () => {
                             >
                               <div className="position-relative" style={{ height: '180px' }}>
                                 <img 
-                                  src={offer.imageUrl ? `http://localhost:5000${offer.imageUrl}` : 'https://via.placeholder.com/400x200?text=No+Image'} 
+                                  src={offer.imageUrl ? `https://geoshops-production.up.railway.app${offer.imageUrl}` : 'https://via.placeholder.com/400x200?text=No+Image'} 
                                   alt={offer.title} 
                                   className="w-100 h-100 object-fit-cover"
                                   style={{ filter: 'brightness(0.95)' }}

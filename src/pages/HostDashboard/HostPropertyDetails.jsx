@@ -6,7 +6,7 @@ import { FaArrowLeft, FaMapMarkerAlt, FaStar, FaPhone, FaEnvelope, FaBuilding, F
 import HostNavbar from "../../components/host/HostNavbar";
 import "./HostDashboard.css";
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://geoshops-production.up.railway.app/api';
 
 const HostPropertyDetails = () => {
   const { id } = useParams();

@@ -28,7 +28,7 @@ const HostSubscription = () => {
 
     const fetchPlans = async () => {
         try {
-            const response = await fetch("http://localhost:5000/api/subscriptions/plans");
+            const response = await fetch("https://geoshops-production.up.railway.app/api/subscriptions/plans");
             if (response.ok) {
                 const data = await response.json();
                 setPlans(data);
@@ -40,7 +40,7 @@ const HostSubscription = () => {
 
     const fetchCurrentSubscription = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/host/${hostId}/subscription`);
+            const response = await fetch(`https://geoshops-production.up.railway.app/api/host/${hostId}/subscription`);
             if (response.ok) {
                 const data = await response.json();
                 setCurrentSubscription(data);
@@ -61,7 +61,7 @@ const HostSubscription = () => {
         if (!hostId || !selectedPlan) return;
         setShowPaymentModal(false);
         try {
-            const response = await fetch("http://localhost:5000/api/host/subscriptions", {
+            const response = await fetch("https://geoshops-production.up.railway.app/api/host/subscriptions", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ hostId, planType: selectedPlan.id }),

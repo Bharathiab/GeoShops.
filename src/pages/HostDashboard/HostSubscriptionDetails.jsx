@@ -31,7 +31,7 @@ const HostSubscriptionDetails = () => {
 
     const fetchSubscriptionDetails = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/host/${hostId}/subscription`);
+            const response = await axios.get(`https://geoshops-production.up.railway.app/api/host/${hostId}/subscription`);
             setSubscription(response.data);
         } catch (error) {
             setError('Failed to load subscription details');
@@ -42,7 +42,7 @@ const HostSubscriptionDetails = () => {
 
     const fetchPaymentHistory = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/host/${hostId}/subscription/payments`);
+            const response = await axios.get(`https://geoshops-production.up.railway.app/api/host/${hostId}/subscription/payments`);
             setPayments(response.data);
         } catch (error) {
             console.error('Error fetching payment history:', error);

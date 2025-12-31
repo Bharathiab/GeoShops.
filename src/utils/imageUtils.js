@@ -32,7 +32,7 @@ export const getPropertyImage = (imageUrl, department) => {
 
     // Handle relative paths for local uploads
     if (!imageUrl.startsWith('http')) {
-        return `http://localhost:5000${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+        return `https://geoshops-production.up.railway.app${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
     }
 
     return imageUrl;

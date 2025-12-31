@@ -233,7 +233,7 @@ const UserOffers = () => {
                                                 <div className="elite-card-image-wrapper p-2 overflow-hidden">
                                                     {offer.imageUrl ? (
                                                         <img
-                                                            src={`http://localhost:5000${offer.imageUrl}`}
+                                                            src={`https://geoshops-production.up.railway.app${offer.imageUrl}`}
                                                             alt={offer.title}
                                                             className="elite-card-image rounded-3"
                                                             style={{ width: '100%', height: '140px', objectFit: 'cover' }}

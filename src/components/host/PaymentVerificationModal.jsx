@@ -158,7 +158,7 @@ const PaymentVerificationModal = ({ show, onHide, booking, onSuccess }) => {
                         const url = payment.receiptUrl;
                         if (url.startsWith('http')) return url;
                         const cleanUrl = url.replace(/\\/g, '/');
-                        return `http://localhost:5000${cleanUrl.startsWith('/') ? '' : '/'}${cleanUrl}`;
+                        return `https://geoshops-production.up.railway.app${cleanUrl.startsWith('/') ? '' : '/'}${cleanUrl}`;
                       })()}
                       alt="Payment Receipt"
                       fluid

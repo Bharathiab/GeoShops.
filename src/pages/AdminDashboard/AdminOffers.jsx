@@ -115,7 +115,7 @@ const AdminOffers = () => {
     });
     // Set preview if existing image
     if (offer.imageUrl) {
-        setPreviewImage(`http://localhost:5000${offer.imageUrl}`);
+        setPreviewImage(`https://geoshops-production.up.railway.app${offer.imageUrl}`);
     } else {
         setPreviewImage(null);
     }
@@ -256,7 +256,7 @@ const AdminOffers = () => {
                     >
                         {offer.imageUrl ? (
                              <img 
-                                src={`http://localhost:5000${offer.imageUrl}`} 
+                                src={`https://geoshops-production.up.railway.app${offer.imageUrl}`} 
                                 alt={offer.title}
                                 className="w-100 h-100 object-fit-cover"
                              />

@@ -211,7 +211,7 @@ const UserMembershipRequest = () => {
     setViewingRequest(request);
     setShowCardModal(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/membership/cards/designs/${cardDesignId}`);
+      const response = await axios.get(`https://geoshops-production.up.railway.app/api/membership/cards/designs/${cardDesignId}`);
       setSelectedCardDesign({ ...response.data, propertyName });
     } catch (error) {
       console.error("Error fetching card design:", error);

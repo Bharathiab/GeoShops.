@@ -25,8 +25,8 @@ const SubscriptionSelection = () => {
   const loadData = async () => {
     try {
       const [plansRes, subRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/subscriptions'),
-        axios.get(`http://localhost:5000/api/host/${hostId}/subscription`)
+        axios.get('https://geoshops-production.up.railway.app/api/subscriptions'),
+        axios.get(`https://geoshops-production.up.railway.app/api/host/${hostId}/subscription`)
       ]);
       setPlans(plansRes.data);
       setCurrentSubscription(subRes.data);
@@ -41,7 +41,7 @@ const SubscriptionSelection = () => {
     setProcessingId(plan.id);
     try {
       if (currentSubscription?.status === 'None' || !currentSubscription) {
-        await axios.post('http://localhost:5000/api/host/subscriptions', { hostId, subscriptionId: plan.id });
+        await axios.post('https://geoshops-production.up.railway.app/api/host/subscriptions', { hostId, subscriptionId: plan.id });
         setAlert({ type: 'success', message: 'Experience activated! Opening dashboard...' });
         setTimeout(() => navigate('/host/dashboard'), 1500);
       } else {

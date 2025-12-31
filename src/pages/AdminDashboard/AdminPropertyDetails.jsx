@@ -19,7 +19,7 @@ import AdminNavbar from "../../components/admin/AdminNavbar";
 import { motion } from "framer-motion";
 import "../../components/admin/AdminDashboardModern.css";
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://geoshops-production.up.railway.app/api';
 
 const AdminPropertyDetails = () => {
   const { id } = useParams();

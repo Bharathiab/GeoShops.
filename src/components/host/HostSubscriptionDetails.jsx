@@ -18,7 +18,7 @@ const HostSubscriptionDetails = () => {
 
     const loadSubscription = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/host/${hostId}/subscription`);
+            const response = await axios.get(`https://geoshops-production.up.railway.app/api/host/${hostId}/subscription`);
             if (response.data.status !== 'None') {
                 setSubscription(response.data);
             }

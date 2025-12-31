@@ -1,5 +1,5 @@
-﻿// API Module - Updated with review and host review functions
-const API_URL = 'http://localhost:5000/api';
+// API Module - Updated with review and host review functions
+const API_URL = 'https://geoshops-production.up.railway.app/api';
 
 export const fetchProperties = async (department) => {
   try {
