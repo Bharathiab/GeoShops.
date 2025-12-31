@@ -1,0 +1,190 @@
+.flagship-wrapper {
+  width: 100%;
+  margin: 60px 0;
+  background: rgba(255, 255, 255, 0.1); /* Glass background */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Background Pattern as an overlay within the glass */
+.flagship-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(30deg, rgba(238, 238, 238, 0.1) 12%, transparent 12.5%, transparent 87%, rgba(238, 238, 238, 0.1) 87.5%, rgba(238, 238, 238, 0.1)),
+    linear-gradient(150deg, rgba(238, 238, 238, 0.1) 12%, transparent 12.5%, transparent 87%, rgba(238, 238, 238, 0.1) 87.5%, rgba(238, 238, 238, 0.1)),
+    linear-gradient(30deg, rgba(238, 238, 238, 0.1) 12%, transparent 12.5%, transparent 87%, rgba(238, 238, 238, 0.1) 87.5%, rgba(238, 238, 238, 0.1)),
+    linear-gradient(150deg, rgba(238, 238, 238, 0.1) 12%, transparent 12.5%, transparent 87%, rgba(238, 238, 238, 0.1) 87.5%, rgba(238, 238, 238, 0.1)),
+    linear-gradient(60deg, rgba(224, 224, 224, 0.1) 25%, transparent 25.5%, transparent 75%, rgba(224, 224, 224, 0.1) 75%, rgba(224, 224, 224, 0.1)),
+    linear-gradient(60deg, rgba(224, 224, 224, 0.1) 25%, transparent 25.5%, transparent 75%, rgba(224, 224, 224, 0.1) 75%, rgba(224, 224, 224, 0.1));
+  background-size: 80px 140px;
+  background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+  opacity: 0.4;
+  z-index: -1;
+}
+
+/* Floating Orbs for depth */
+.flagship-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.6;
+}
+
+.orb-emerald {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(15, 118, 110, 0.2) 0%, transparent 70%);
+  top: -100px;
+  left: -50px;
+}
+
+.orb-gold {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(191, 161, 66, 0.15) 0%, transparent 70%);
+  bottom: -150px;
+  right: -100px;
+}
+
+
+.flagship-intro {
+  flex: 0 0 280px; /* Reduced from 350px */
+  margin-right: 48px;
+}
+
+.flagship-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #6a6e73;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.flagship-title {
+  font-size: 2.2rem; /* Reduced from 3rem */
+  font-weight: 800;
+  color: #bfa142; /* Gold color */
+  line-height: 1.1;
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+.flagship-accent-line {
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #bfa142, transparent);
+  margin-top: 15px;
+  border-radius: 2px;
+}
+
+
+.flagship-scroll {
+  flex: 1;
+  display: flex;
+  gap: 32px;
+  overflow-x: auto;
+  padding: 10px 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.flagship-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.flagship-card-wrapper {
+  perspective: 1000px;
+}
+
+.flagship-card {
+  min-width: 280px;
+  max-width: 280px;
+  height: 340px; /* Reduced fixed height */
+  background: #ffffff;
+  border-radius: 16px; /* Slightly smaller radius for smaller card */
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.flagship-card:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.flagship-image-wrap {
+  width: 100%;
+  height: 160px; /* Reduced image height */
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+  flex-shrink: 0;
+}
+
+
+.flagship-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.flagship-card:hover .flagship-img {
+  transform: scale(1.05);
+}
+
+.flagship-content {
+  padding: 16px; /* Reduced from 24px */
+  background: #fff;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.flagship-subtitle {
+  font-size: 1.05rem; /* Reduced from 1.2rem */
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+
+.flagship-desc {
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.5;
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+@media (max-width: 1024px) {
+  .flagship-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 32px;
+  }
+  
+  .flagship-intro {
+    margin-right: 0;
+    margin-bottom: 32px;
+    flex: none;
+  }
+}

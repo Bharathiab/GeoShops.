@@ -1,0 +1,397 @@
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  NavDropdown,
+  Modal,
+  Button,
+  Dropdown
+} from "react-bootstrap";
+import {
+  FaUser,
+  FaHotel,
+  FaHeartbeat,
+  FaCut,
+  FaTaxi,
+  FaCalendarAlt,
+  FaHome,
+  FaBuilding,
+  FaBell,
+  FaGift,
+  FaSignOutAlt,
+  FaBars,
+  FaTimes,
+  FaUserPlus
+} from "react-icons/fa";
+import { useNavigate, useLocation } from "react-router-dom";
+import { fetchNotifications, markNotificationRead, fetchActiveOffers, fetchBookings, fetchDepartments } from "../../api";
+import { motion, AnimatePresence } from "framer-motion";
+
+const UserNavbar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [hasSpecialOffer, setHasSpecialOffer] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const loginData = localStorage.getItem("userLoginData");
+    if (loginData) {
+      const parsed = JSON.parse(loginData);
+      setUserId(parsed.userId);
+      
+      const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+      const user = users.find((u) => u.id === parsed.userId);
+      
+      if (user) {
+        setUserName(user.name);
+        setUserDetails(user);
+      } else if (parsed.username) {
+        setUserName(parsed.username);
+        setUserDetails({ name: parsed.username, email: parsed.email || "Not available" });
+      }
+      
+      loadNotifications(parsed.userId);
+      checkSpecialOffers(parsed.userId);
+
+      const interval = setInterval(() => {
+          loadNotifications(parsed.userId);
+      }, 30000);
+
+      return () => clearInterval(interval);
+    }
+  }, []);
+
+  const loadNotifications = async (id) => {
+    try {
+      const data = await fetchNotifications(id);
+      setNotifications(data);
+      setUnreadCount(data.filter(n => !n.is_read).length);
+    } catch (error) {
+      console.error("Error loading notifications:", error);
+    }
+  };
+
+  const checkSpecialOffers = async (id) => {
+    try {
+      const offers = await fetchActiveOffers();
+      const specialOffers = offers.filter(o => o.type === 'Special');
+      
+      const bookings = await fetchBookings(id);
+      const propertyCounts = {};
+      bookings.forEach(b => {
+          const propId = b.propertyId || b.hotel_id || b.saloon_id || b.hospital_id || b.cab_id;
+          if (propId) {
+              propertyCounts[propId] = (propertyCounts[propId] || 0) + 1;
+          }
+      });
+      
+      const hasFrequentBooking = Object.values(propertyCounts).some(count => count >= 4);
+
+      if (specialOffers.length > 0 || hasFrequentBooking) {
+          setHasSpecialOffer(true);
+      }
+    } catch (error) {
+      console.error("Error checking offers:", error);
+    }
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("userLoginData");
+    navigate("/");
+  };
+
+  const [departments, setDepartments] = useState([
+    { name: "Home", icon: <FaHome size={20} />, key: "Home" }
+  ]);
+
+  useEffect(() => {
+    const loadDepartments = async () => {
+      try {
+        const data = await fetchDepartments();
+        const activeDepts = data.filter(d => d.status === 'Active');
+        
+        const getIcon = (name) => {
+          switch(name) {
+            case 'Hotel': return <FaHotel size={20} />;
+            case 'Hospital': return <FaHeartbeat size={20} />;
+            case 'Salon': return <FaCut size={20} />;
+            case 'Cab': return <FaTaxi size={20} />;
+            default: return <FaBuilding size={20} />;
+          }
+        };
+
+        const dynamicDepts = activeDepts.map(d => ({
+          name: d.name,
+          icon: getIcon(d.name),
+          key: d.name
+        }));
+
+        // Ensure Home is always first and unique
+        const allDepts = [
+            { name: "Home", icon: <FaHome size={20} />, key: "Home" },
+            ...dynamicDepts
+        ];
+        
+        // Remove duplicates if any (based on key)
+        const uniqueDepts = Array.from(new Map(allDepts.map(item => [item.key, item])).values());
+        setDepartments(uniqueDepts);
+
+      } catch (error) {
+        console.error("Error loading departments:", error);
+      }
+    };
+    loadDepartments();
+  }, []);
+
+  const handleDepartmentChange = (key) => {
+    if (key === 'Home') {
+      navigate('/user');
+    } else {
+      // Check if it's a legacy route or dynamic
+      const legacyRoutes = {
+        'Hotel': '/user/booking/hotel',
+        'Hospital': '/user/booking/hospital',
+        'Salon': '/user/booking/salon',
+        'Cab': '/user/booking/cab'
+      };
+      
+      if (legacyRoutes[key]) {
+        navigate(legacyRoutes[key]);
+      } else {
+        navigate(`/user/booking/${key}`);
+      }
+    }
+  };
+
+  const handleNotificationClick = async (notification) => {
+    if (!notification.is_read) {
+      try {
+        await markNotificationRead(notification.id);
+        setNotifications(notifications.map(n => n.id === notification.id ? { ...n, is_read: true } : n));
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      } catch (error) {
+        console.error("Error marking notification read:", error);
+      }
+    }
+  };
+
+  const isActive = (key) => {
+    if (key === "Home") return location.pathname === "/user";
+    return location.pathname.includes(`/booking/${key}`) || location.pathname.includes(`/booking/${key.toLowerCase()}`);
+  };
+
+  return (
+    <>
+      <nav className="premium-user-navbar">
+        <div className="navbar-container">
+          <div className="navbar-brand" onClick={() => navigate("/user")}>
+            <div className="brand-icon">
+              <FaBuilding size={22} />
+            </div>
+            <div className="brand-text">
+              <h2 className="brand-title">Geo</h2>
+              <span className="brand-subtitle">Bookings</span>
+            </div>
+          </div>
+
+          <div className="navbar-departments">
+            {departments.map((dept) => (
+              <div
+                key={dept.key}
+                className={`dept-item ${isActive(dept.key) ? "active" : ""}`}
+                onClick={() => handleDepartmentChange(dept.key)}
+              >
+                <span className="dept-icon">{dept.icon}</span>
+                <span className="dept-label">{dept.name}</span>
+                {isActive(dept.key) && <div className="active-indicator" />}
+              </div>
+            ))}
+          </div>
+
+          <div className="navbar-actions">
+            <div className="action-item" onClick={() => navigate("/user-bookings")}>
+              <FaBuilding size={16} />
+              <span>My Bookings</span>
+            </div>
+
+            {hasSpecialOffer ? (
+              <motion.div
+                className="action-item special-offer"
+                onClick={() => navigate("/user/offers")}
+                initial={{ scale: 1 }}
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+              >
+                <FaGift size={16} />
+                <span>Special Offers</span>
+                <div className="offer-badge">NEW</div>
+              </motion.div>
+            ) : (
+              <div className="action-item" onClick={() => navigate("/user-bookings")}>
+                <FaCalendarAlt size={16} />
+                <span>Offers</span>
+              </div>
+            )}
+
+            {userName ? (
+              <div className="user-account-container">
+                <div className="user-profile-btn" onClick={() => setShowProfileModal(true)}>
+                  <div className="user-avatar">
+                    <FaUser size={14} />
+                  </div>
+                  <span className="user-name">{userName}</span>
+                </div>
+                <div className="logout-tooltip" onClick={handleLogout}>
+                  <FaSignOutAlt size={12} />
+                  <span>Logout</span>
+                </div>
+              </div>
+            ) : (
+              <div className="action-item" onClick={() => navigate("/user-login")}>
+                <div className="user-avatar">
+                  <FaUser size={14} />
+                </div>
+                <span className="user-name">Login / Register</span>
+              </div>
+            )}
+
+            <Dropdown show={showNotifications} onToggle={(isOpen) => setShowNotifications(isOpen)} align="end">
+              <Dropdown.Toggle as="div" className="notification-bell" onClick={() => setShowNotifications(!showNotifications)}>
+                <FaBell size={18} />
+                {unreadCount > 0 && (
+                  <span className="notification-badge">{unreadCount}</span>
+                )}
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu className="notification-dropdown">
+                <div className="dropdown-header">
+                  <h6>Notifications</h6>
+                  {unreadCount > 0 && <span className="unread-count">{unreadCount} new</span>}
+                </div>
+                <div className="notifications-list">
+                  {notifications.length > 0 ? (
+                    notifications.map((notif) => (
+                      <Dropdown.Item 
+                        key={notif.id} 
+                        onClick={() => handleNotificationClick(notif)}
+                        className={`notification-item ${!notif.is_read ? 'unread' : ''}`}
+                      >
+                        <div className="notif-icon">
+                          {notif.type === 'Offer' ? <FaGift /> : <FaBell />}
+                        </div>
+                        <div className="notif-content">
+                          <p className="notif-message">{notif.message}</p>
+                          <small className="notif-time">
+                            {new Date(notif.created_at).toLocaleString()}
+                          </small>
+                        </div>
+                      </Dropdown.Item>
+                    ))
+                  ) : (
+                    <div className="no-notifications">
+                      <FaBell size={40} />
+                      <p>No notifications yet</p>
+                    </div>
+                  )}
+                </div>
+              </Dropdown.Menu>
+            </Dropdown>
+
+            <button 
+              className="mobile-menu-toggle"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+            </button>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="mobile-menu"
+            >
+              {departments.map((dept) => (
+                <div
+                  key={dept.key}
+                  className={`mobile-dept-item ${isActive(dept.key) ? "active" : ""}`}
+                  onClick={() => {
+                    handleDepartmentChange(dept.key);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <span className="dept-icon">{dept.icon}</span>
+                  <span className="dept-label">{dept.name}</span>
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+
+      <Modal show={showProfileModal} onHide={() => setShowProfileModal(false)} centered className="profile-modal">
+        <Modal.Header closeButton>
+          <Modal.Title>My Profile</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="profile-content">
+            <div className="profile-avatar-large">
+              <FaUser size={60} />
+            </div>
+            {userDetails ? (
+              <>
+                <h3 className="profile-name">{userDetails.name}</h3>
+                <p className="profile-role">Valued Member</p>
+                <div className="profile-details">
+                  <div className="detail-row">
+                    <span className="detail-label">Email:</span>
+                    <span className="detail-value">{userDetails.email}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">Phone:</span>
+                    <span className="detail-value">{userDetails.phoneNumber || "Not provided"}</span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <p>Loading...</p>
+            )}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowProfileModal(false)}>
+            Close
+            padding: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          }
+
+          .mobile-dept-item:hover,
+          .mobile-dept-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .navbar-container {
+            padding: 0 1rem;
+          }
+        }
+      `}</style>
+    </>
+  );
+};
+
+export default UserNavbar;

@@ -1,0 +1,68 @@
+/* Admin Navbar Styles - Sidebar Version */
+.admin-navbar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #ffffff;
+  color: #2c3e50;
+  padding: 20px 0;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-navbar .logo {
+  margin: 0 20px 30px 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #007bff;
+  text-align: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.admin-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 20px;
+}
+
+.admin-links a {
+  color: #495057;
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-links a:hover {
+  background-color: #e7f3ff;
+  color: #007bff;
+  text-decoration: none;
+  transform: translateX(5px);
+}
+
+.admin-links a.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-navbar {
+    height: auto;
+    padding: 15px 0;
+  }
+
+  .admin-links {
+    padding: 0 15px;
+  }
+
+  .admin-links a {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}

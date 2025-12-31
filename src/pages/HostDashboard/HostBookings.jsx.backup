@@ -1,0 +1,503 @@
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, Table, Badge, Button, Form, ButtonGroup, Toast } from 'react-bootstrap';
+import { FaCalendarAlt, FaFilter, FaFileExport } from 'react-icons/fa';
+import { fetchHostBookings } from '../../api';
+import HostNavbar from '../../components/host/HostNavbar';
+
+const HostBookings = () => {
+  const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+  const hostId = JSON.parse(localStorage.getItem('hostLoginData'))?.hostId;
+
+  const filters = ['All', 'Pending', 'Confirmed', 'Cancelled', 'Cancelled by Customer', 'Completed'];
+
+  useEffect(() => {
+    loadBookings();
+  }, []);
+
+  useEffect(() => {
+    filterBookings();
+  }, [activeFilter, searchTerm, bookings]);
+
+  const loadBookings = async () => {
+    try {
+      setLoading(true);
+      console.log('Fetching bookings for hostId:', hostId);
+      const data = await fetchHostBookings(hostId);
+      console.log('Received bookings:', data);
+      setBookings(data);
+    } catch (error) {
+      console.error('Error loading bookings:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filterBookings = () => {
+    let filtered = bookings;
+
+    // Filter by status
+    if (activeFilter !== 'All') {
+      filtered = filtered.filter(b => b.status === activeFilter);
+    }
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(b =>
+        b.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        b.propertyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        b.id?.toString().includes(searchTerm)
+      );
+    }
+
+    setFilteredBookings(filtered);
+  };
+
+  const handleStatusChange = async (bookingId, department, newStatus) => {
+    try {
+      // Import the updateBookingStatus function from api.js
+      const { updateBookingStatus } = await import('../../api');
+
+      await updateBookingStatus(department, bookingId, newStatus);
+
+      // Update the local state
+      const updatedBookings = bookings.map(b =>
+        b.id === bookingId ? { ...b, status: newStatus } : b
+      );
+      setBookings(updatedBookings);
+
+      // Show success message (optional)
+      console.log(`Booking ${bookingId} status updated to ${newStatus}`);
+    } catch (error) {
+      console.error('Error updating booking status:', error);
+      alert('Failed to update booking status. Please try again.');
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    const variants = {
+      'Pending': 'warning',
+      'Confirmed': 'success',
+      'Cancelled': 'danger',
+      'Completed': 'info',
+      'Cancelled by Customer': 'secondary'
+    };
+    return <Badge bg={variants[status] || 'secondary'}>{status}</Badge>;
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('en-IN');
+  };
+
+  const calculateFinalPrice = (booking) => {
+    return booking.finalPrice || booking.totalPrice || booking.estimatedPrice || 0;
+  };
+
+  const exportToCSV = () => {
+    const headers = ['Booking ID', 'User Name', 'Property', 'Department', 'Date', 'Coupon', 'Original Price', 'Discount', 'Final Price', 'Status'];
+    const rows = filteredBookings.map(b => [
+      b.id,
+      b.userName,
+      b.propertyName,
+      b.department,
+      formatDate(b.checkInDate || b.appointmentDate),
+      b.couponCode || 'None',
+      b.totalPrice || b.estimatedPrice || 0,
+      0, // discount not tracked separately
+      calculateFinalPrice(b),
+      b.status
+    ]);
+
+    const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `bookings_${activeFilter}_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+  };
+
+  return (
+    <>
+      <HostNavbar />
+      <div style={{ marginLeft: '260px', padding: '2rem', minHeight: '100vh', background: '#f8f9fa' }}>
+        {/* Success Toast */}
+        <div style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}>
+          <Toast show={showSuccessToast} onClose={() => setShowSuccessToast(false)} bg="success">
+            <Toast.Header>
+              <strong className="me-auto">Success</strong>
+            </Toast.Header>
+            <Toast.Body className="text-white">
+              Status updated successfully!
+            </Toast.Body>
+          </Toast>
+        </div>
+
+        <Container fluid>
+          <Row className="mb-4">
+            <Col>
+              <h2 className="mb-0" style={{ color: '#2c3e50', fontWeight: '700' }}>
+                <FaCalendarAlt className="me-2" />
+                All Bookings
+              </h2>
+              <p className="text-muted">View and manage all property bookings</p>
+            </Col>
+          </Row>
+
+          <Card className="shadow-sm mb-4">
+            <Card.Body>
+              <Row className="align-items-center mb-3">
+                <Col md={6}>
+                  <ButtonGroup>
+                    {filters.map(filter => (
+                      <Button
+                        key={filter}
+                        variant={activeFilter === filter ? 'primary' : 'outline-primary'}
+                        onClick={() => setActiveFilter(filter)}
+                      >
+                        {filter} ({bookings.filter(b => filter === 'All' || b.status === filter).length})
+                      </Button>
+                    ))}
+                  </ButtonGroup>
+                </Col>
+                <Col md={4}>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search by booking ID, user, or property..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </Col>
+                <Col md={2}>
+                  <Button variant="success" onClick={exportToCSV} className="w-100">
+                    <FaFileExport className="me-2" />
+                    Export CSV
+                  </Button>
+                </Col>
+              </Row>
+
+              <div className="table-responsive">
+                <Table hover>
+                  <thead style={{ background: '#f8f9fa' }}>
+                    <tr>
+                      <th>Booking ID</th>
+                      <th>User Name</th>
+                      <th>Property</th>
+                      <th>Department</th>
+                      <th>Date</th>
+                      <th>Coupon</th>
+                      <th>Original Price</th>
+                      <th>Discount</th>
+                      <th>Final Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr>
+                        <td colSpan="10" className="text-center py-4">
+                          Loading bookings...
+                        </td>
+                      </tr>
+                    ) : filteredBookings.length === 0 ? (
+                      <tr>
+                        <td colSpan="10" className="text-center py-4 text-muted">
+                          No bookings found for the selected filter.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredBookings.map((booking) => (
+                        <tr key={`${booking.department}-${booking.id}`}>
+                          <td><strong>#{booking.id}</strong></td>
+                          <td>{booking.userName}</td>
+                          <td>{booking.propertyName}</td>
+                          <td>
+                            <Badge bg="info" pill>{booking.department}</Badge>
+                          </td>
+                          <td>{formatDate(booking.checkInDate || booking.appointmentDate)}</td>
+                          <td>
+                            {booking.couponCode ? (
+                              <Badge bg="success">{booking.couponCode}</Badge>
+                            ) : (
+                              <span className="text-muted">-</span>
+                            )}
+                          </td>
+                          <td>₹{(booking.totalPrice || booking.estimatedPrice || 0).toFixed(2)}</td>
+                          <td className="text-success">-</td>
+                          <td><strong>₹{calculateFinalPrice(booking).toFixed(2)}</strong></td>
+                          <td>
+                            <Form.Select
+                              size="sm"
+                              value={booking.status}
+                              onChange={(e) => handleStatusChange(booking.id, booking.department, e.target.value)}
+                              disabled={booking.status === 'Cancelled by Customer'}
+                              style={{
+                                minWidth: '120px',
+                                backgroundColor:
+                                  booking.status === 'Confirmed' ? '#ffe5cc' :
+                                    booking.status === 'Pending' ? '#fff3cd' :
+                                      booking.status === 'Completed' ? '#d4edda' :
+                                        booking.status === 'Cancelled' ? '#f8d7da' :
+                                          booking.status === 'Cancelled by Customer' ? '#e2e3e5' : 'white',
+                                border: '1px solid #dee2e6',
+                                fontWeight: '500',
+                                color: booking.status === 'Completed' ? '#155724' : '#000',
+                                cursor: booking.status === 'Cancelled by Customer' ? 'not-allowed' : 'pointer'
+                              }}
+                            >
+                              <option value="Pending">Pending</option>
+                              <option value="Confirmed">Confirmed</option>
+                              <option value="Completed">Completed</option>
+                              <option value="Cancelled">Cancelled</option>
+                              <option value="Cancelled by Customer">Cancelled by Customer</option>
+                            </Form.Select>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </Table>
+              </div>
+
+              {filteredBookings.length > 0 && (
+                <div className="mt-3 text-muted">
+                  Showing {filteredBookings.length} of {bookings.length} bookings
+                </div>
+              )}
+            </Card.Body>
+          </Card>
+
+          {/* Summary Cards */}
+          <Row>
+            <Col md={3}>
+              <Card className="shadow-sm text-center">
+                <Card.Body>
+                  <h3 className="text-primary">{bookings.length}</h3>
+                  <p className="text-muted mb-0">Total Bookings</p>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={3}>
+              <Card className="shadow-sm text-center">
+                <Card.Body>
+                  <h3 className="text-warning">{bookings.filter(b => b.status === 'Pending').length}</h3>
+                  <p className="text-muted mb-0">Pending</p>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={3}>
+              <Card className="shadow-sm text-center">
+                <Card.Body>
+                  <h3 className="text-success">{bookings.filter(b => b.status === 'Confirmed').length}</h3>
+                  <p className="text-muted mb-0">Confirmed</p>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={3}>
+              <Card className="shadow-sm text-center">
+                <Card.Body>
+                  <h3 className="text-info">
+                    ₹{bookings.reduce((sum, b) => sum + calculateFinalPrice(b), 0).toFixed(2)}
+                  </h3>
+                  <p className="text-muted mb-0">Total Revenue</p>
+
+                  return (
+                  <>
+                    <HostNavbar />
+                    <div style={{ marginLeft: '260px', padding: '2rem', minHeight: '100vh', background: '#f8f9fa' }}>
+                      {/* Success Toast */}
+                      <div style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}>
+                        <Toast show={showSuccessToast} onClose={() => setShowSuccessToast(false)} bg="success">
+                          <Toast.Header>
+                            <strong className="me-auto">Success</strong>
+                          </Toast.Header>
+                          <Toast.Body className="text-white">
+                            Status updated successfully!
+                          </Toast.Body>
+                        </Toast>
+                      </div>
+
+                      <Container fluid>
+                        <Row className="mb-4">
+                          <Col>
+                            <h2 className="mb-0" style={{ color: '#2c3e50', fontWeight: '700' }}>
+                              <FaCalendarAlt className="me-2" />
+                              All Bookings
+                            </h2>
+                            <p className="text-muted">View and manage all property bookings</p>
+                          </Col>
+                        </Row>
+
+                        <Card className="shadow-sm mb-4">
+                          <Card.Body>
+                            <Row className="align-items-center mb-3">
+                              <Col md={6}>
+                                <ButtonGroup>
+                                  {filters.map(filter => (
+                                    <Button
+                                      key={filter}
+                                      variant={activeFilter === filter ? 'primary' : 'outline-primary'}
+                                      onClick={() => setActiveFilter(filter)}
+                                    >
+                                      {filter} ({bookings.filter(b => filter === 'All' || b.status === filter).length})
+                                    </Button>
+                                  ))}
+                                </ButtonGroup>
+                              </Col>
+                              <Col md={4}>
+                                <Form.Control
+                                  type="text"
+                                  placeholder="Search by booking ID, user, or property..."
+                                  value={searchTerm}
+                                  onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                              </Col>
+                              <Col md={2}>
+                                <Button variant="success" onClick={exportToCSV} className="w-100">
+                                  <FaFileExport className="me-2" />
+                                  Export CSV
+                                </Button>
+                              </Col>
+                            </Row>
+
+                            <div className="table-responsive">
+                              <Table hover>
+                                <thead style={{ background: '#f8f9fa' }}>
+                                  <tr>
+                                    <th>Booking ID</th>
+                                    <th>User Name</th>
+                                    <th>Property</th>
+                                    <th>Department</th>
+                                    <th>Date</th>
+                                    <th>Coupon</th>
+                                    <th>Original Price</th>
+                                    <th>Discount</th>
+                                    <th>Final Amount</th>
+                                    <th>Status</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {loading ? (
+                                    <tr>
+                                      <td colSpan="10" className="text-center py-4">
+                                        Loading bookings...
+                                      </td>
+                                    </tr>
+                                  ) : filteredBookings.length === 0 ? (
+                                    <tr>
+                                      <td colSpan="10" className="text-center py-4 text-muted">
+                                        No bookings found for the selected filter.
+                                      </td>
+                                    </tr>
+                                  ) : (
+                                    filteredBookings.map((booking) => (
+                                      <tr key={`${booking.department}-${booking.id}`}>
+                                        <td><strong>#{booking.id}</strong></td>
+                                        <td>{booking.userName}</td>
+                                        <td>{booking.propertyName}</td>
+                                        <td>
+                                          <Badge bg="info" pill>{booking.department}</Badge>
+                                        </td>
+                                        <td>{formatDate(booking.checkInDate || booking.appointmentDate)}</td>
+                                        <td>
+                                          {booking.couponCode ? (
+                                            <Badge bg="success">{booking.couponCode}</Badge>
+                                          ) : (
+                                            <span className="text-muted">-</span>
+                                          )}
+                                        </td>
+                                        <td>₹{(booking.totalPrice || booking.estimatedPrice || 0).toFixed(2)}</td>
+                                        <td className="text-success">-</td>
+                                        <td><strong>₹{calculateFinalPrice(booking).toFixed(2)}</strong></td>
+                                        <td>
+                                          <Form.Select
+                                            size="sm"
+                                            value={booking.status}
+                                            onChange={(e) => handleStatusChange(booking.id, booking.department, e.target.value)}
+                                            disabled={booking.status === 'Cancelled by Customer'}
+                                            style={{
+                                              minWidth: '120px',
+                                              backgroundColor:
+                                                booking.status === 'Confirmed' ? '#ffe5cc' :
+                                                  booking.status === 'Pending' ? '#fff3cd' :
+                                                    booking.status === 'Completed' ? '#d4edda' :
+                                                      booking.status === 'Cancelled' ? '#f8d7da' :
+                                                        booking.status === 'Cancelled by Customer' ? '#e2e3e5' : 'white',
+                                              border: '1px solid #dee2e6',
+                                              fontWeight: '500',
+                                              color: booking.status === 'Completed' ? '#155724' : '#000',
+                                              cursor: booking.status === 'Cancelled by Customer' ? 'not-allowed' : 'pointer'
+                                            }}
+                                          >
+                                            <option value="Pending">Pending</option>
+                                            <option value="Confirmed">Confirmed</option>
+                                            <option value="Completed">Completed</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                            <option value="Cancelled by Customer">Cancelled by Customer</option>
+                                          </Form.Select>
+                                        </td>
+                                      </tr>
+                                    ))
+                                  )}
+                                </tbody>
+                              </Table>
+                            </div>
+
+                            {filteredBookings.length > 0 && (
+                              <div className="mt-3 text-muted">
+                                Showing {filteredBookings.length} of {bookings.length} bookings
+                              </div>
+                            )}
+                          </Card.Body>
+                        </Card>
+
+                        {/* Summary Cards */}
+                        <Row>
+                          <Col md={3}>
+                            <Card className="shadow-sm text-center">
+                              <Card.Body>
+                                <h3 className="text-primary">{bookings.length}</h3>
+                                <p className="text-muted mb-0">Total Bookings</p>
+                              </Card.Body>
+                            </Card>
+                          </Col>
+                          <Col md={3}>
+                            <Card className="shadow-sm text-center">
+                              <Card.Body>
+                                <h3 className="text-warning">{bookings.filter(b => b.status === 'Pending').length}</h3>
+                                <p className="text-muted mb-0">Pending</p>
+                              </Card.Body>
+                            </Card>
+                          </Col>
+                          <Col md={3}>
+                            <Card className="shadow-sm text-center">
+                              <Card.Body>
+                                <h3 className="text-success">{bookings.filter(b => b.status === 'Confirmed').length}</h3>
+                                <p className="text-muted mb-0">Confirmed</p>
+                              </Card.Body>
+                            </Card>
+                          </Col>
+                          <Col md={3}>
+                            <Card className="shadow-sm text-center">
+                              <Card.Body>
+                                <h3 className="text-info">
+                                  ₹{bookings.reduce((sum, b) => sum + calculateFinalPrice(b), 0).toFixed(2)}
+                                </h3>
+                                <p className="text-muted mb-0">Total Revenue</p>
+                              </Card.Body>
+                            </Card>
+                          </Col>
+                        </Row>
+                      </Container>
+                    </div>
+                  </>
+                  );
+};
+
+                  export default HostBookings;

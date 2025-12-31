@@ -1,0 +1,94 @@
+/* Global Layout Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Admin Layout - Main Content Wrapper */
+.admin-main-content {
+  margin-left: 260px;
+  padding: 2rem;
+  min-height: 100vh;
+  background: #f4f6f9;
+  transition: margin-left 0.3s ease;
+}
+
+/* When sidebar is collapsed - using body class */
+body.admin-sidebar-collapsed .admin-main-content {
+  margin-left: 80px !important;
+}
+
+/* Admin Dashboard specific */
+.admin-dashboard {
+  width: 100%;
+}
+
+/* Host Layout - Main Content Wrapper */
+.host-main-content {
+  margin-left: 280px;
+  padding: 2.5rem 3rem;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+/* When sidebar is collapsed */
+/* When sidebar is collapsed */
+body.host-sidebar-collapsed .host-main-content {
+  margin-left: 80px !important;
+}
+
+/* Host Dashboard specific */
+.host-dashboard {
+  width: 100%;
+}
+
+/* User Layout - Top Navbar */
+.user-page-wrapper {
+  padding-top: 95px;
+  /* Height of navbar + spacing */
+  min-height: 100vh;
+}
+
+.user-dashboard,
+.user-page-container {
+  padding-top: 95px;
+  min-height: 100vh;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+
+  .admin-main-content,
+  .host-main-content {
+    margin-left: 80px;
+    padding: 1rem;
+  }
+
+  .user-page-wrapper,
+  .user-dashboard,
+  .user-page-container {
+    padding-top: 85px;
+  }
+}
+
+/* Smooth transitions for all layouts */
+.admin-main-content,
+.host-main-content,
+.user-page-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Ensure content doesn't overflow */
+.container-fluid {
+  max-width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+}

@@ -1,0 +1,400 @@
+/* ==================== MAIN WRAPPER ==================== */
+.booking-selection-wrapper {
+  min-height: 100vh;
+  /* Light Elite Theme */
+  background: #f8fafc;
+  position: relative;
+  overflow-x: hidden;
+  font-family: 'Outfit', sans-serif;
+  color: #1e293b;
+}
+/* Overlay removed for clean look */
+
+/* Ensure content stays above the overlay */
+.booking-selection-hero,
+.premium-card,
+.premium-white-card,
+.premium-dark-card,
+.offers-section,
+.refer-section,
+.reviews-section,
+.section-title {
+  position: relative;
+  z-index: 1;
+}
+
+.booking-selection-hero {
+  padding: 120px 20px 80px;
+  text-align: center;
+}
+
+/* ==================== HEADER & CARDS ==================== */
+.back-btn {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.4s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+.back-btn:hover { 
+  background: rgba(255,255,255,0.22); 
+  transform: translateX(-6px); 
+}
+
+.hero-title {
+  font-size: 3.8rem;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.6);
+  margin-bottom: 20px;
+}
+.hero-subtitle {
+  font-size: 1.35rem;
+  color: rgba(255,255,255,0.95);
+  font-weight: 300;
+  max-width: 700px;
+  margin: 0 auto 50px;
+}
+
+/* ==================== CARD STYLES ==================== */
+.premium-white-card {
+  transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
+  overflow: hidden;
+  background: #ffffff;
+  /* Multi-layered professional shadow */
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.05), 
+    0 10px 15px -3px rgba(0, 0, 0, 0.03),
+    0 20px 25px -5px rgba(0, 0, 0, 0.02) !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+
+.card-shine-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0.4) 50%,
+        rgba(255,255,255,0) 60%
+    );
+    z-index: 1;
+    background-size: 200% 200%;
+    animation: shine 4s infinite;
+    pointer-events: none;
+}
+
+@keyframes shine {
+    0% { background-position: 150% 150%; }
+    20% { background-position: -150% -150%; }
+    100% { background-position: -150% -150%; }
+}
+
+/* ==================== SIGNATURE CARD V2 ==================== */
+.card-top-bar {
+    height: 4px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 32px 32px 0 0;
+    z-index: 10;
+}
+
+.icon-circle-v2 {
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.card-title-v2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-desc-v2 {
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.features-container-v2 {
+    text-align: left;
+}
+
+.feature-item-v2 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.explore-btn-v2 {
+    border: none;
+    color: white;
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+/* ==================== REVIEWS SECTION ==================== */
+.quote-icon-container {
+    position: absolute;
+    top: -30px;
+    left: 40px;
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+}
+
+.explore-btn {
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(255,255,255,0.4);
+  color: white; 
+  padding: 14px 36px;
+  border-radius: 50px; 
+  font-size: 1.1rem; 
+  font-weight: 600;
+  transition: all 0.4s; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  gap: 12px; 
+  margin: 0 auto; 
+  width: fit-content;
+}
+.explore-btn:hover { 
+  background: rgba(255,255,255,0.35); 
+  transform: translateY(-4px); 
+}
+.explore-btn .arrow { transition: transform 0.3s; }
+.explore-btn:hover .arrow { transform: translateX(8px); }
+
+/* ==================== OFFERS SECTION ==================== */
+.offers-section {
+  background: transparent;
+}
+.elite-carousel .carousel-indicators button {
+    background-color: #fbbf24 !important;
+}
+
+/* ==================== REFER & EARN ==================== */
+.refer-section {
+  background: transparent;
+}
+.refer-box-elite {
+    transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
+    box-shadow: 0 15px 35px rgba(217, 119, 6, 0.2) !important;
+}
+.refer-box-elite:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px rgba(217, 119, 6, 0.3) !important;
+}
+
+/* ==================== REVIEWS SECTION ==================== */
+.reviews-section {
+  background: #f1f5f9; /* Slate 100 */
+}
+.review-box-elite {
+    transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+    border-radius: 24px !important;
+    border: 1px solid rgba(226, 232, 240, 0.5) !important;
+}
+.review-box-elite:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 45px rgba(0,0,0,0.06) !important;
+}
+
+/* ==================== UTILITIES & BUTTONS ==================== */
+.section-title {
+  font-size: 2.25rem;
+  font-weight: 900;
+  margin-bottom: 2.5rem;
+  letter-spacing: -1px;
+  color: #0f172a;
+}
+
+.font-heading {
+    font-family: 'Outfit', sans-serif;
+}
+
+.btn-gold {
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+.btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(251, 191, 36, 0.4);
+    background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+    color: white;
+}
+
+/* Carousel Control Overrides */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1) grayscale(100); /* Make arrows dark for visibility on light bg */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero-title { font-size: 2.5rem; }
+  .section-title { font-size: 2rem; }
+  .premium-white-card { padding: 2rem !important; }
+  .refer-box-elite { padding: 2rem !important; }
+  .display-5 { font-size: 2rem; }
+}
+
+.scroll-container-horizontal::-webkit-scrollbar {
+  display: none;
+}
+.scroll-container-horizontal {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: auto;
+  /* Hint at more content with a mask */
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+
+/* Elite Loader */
+.elite-loader {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(251, 191, 36, 0.1);
+  border-left-color: #fbbf24;
+  border-radius: 50%;
+  animation: elite-spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+/* ==================== NEW CARD DESIGN V2 ==================== */
+.card-top-bar {
+    height: 5px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.icon-circle-v2 {
+    width: 70px;
+    height: 70px;
+    border-radius: 50% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.card-title-v2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+.card-desc-v2 {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+    line-height: 1.4;
+    margin-bottom: 25px;
+    min-height: 2.8em;
+}
+
+.features-container-v2 {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 18px;
+    text-align: left;
+}
+
+.feature-item-v2 {
+    font-size: 0.85rem;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.feature-item-v2:last-child {
+    margin-bottom: 0;
+}
+
+.feature-dot {
+    color: #f59e0b;
+    font-size: 0.7rem;
+}
+
+/* ==================== NEW CARD DESIGN V2 ==================== */
+.book-now-btn-v2 {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 1.5px solid #fbbf24 !important;
+    color: #d97706 !important;
+    width: 100%;
+    border-radius: 30px !important;
+    font-weight: 800 !important;
+    font-size: 0.75rem !important;
+    padding: 12px 0 !important;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    box-shadow: 0 2px 4px rgba(251, 191, 36, 0.1);
+}
+
+.book-now-btn-v2:hover {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(251, 191, 36, 0.3);
+}
+
+@keyframes elite-spin {
+  to { transform: rotate(360deg); }
+}
